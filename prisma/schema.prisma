@@ -28,9 +28,9 @@ enum Label {
 model Phonebook {
   id           Int     @id @default(autoincrement())
   name         String  @unique
-  avatar_image String?
+  avatar_url   String?
   phone        String  @unique
-  address      String 
+  address      String
   label        Label
   isBookmarked Boolean @default(false)
   isDeleted    Boolean @default(false)
