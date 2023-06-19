@@ -30,6 +30,7 @@ model Phonebook {
   name         String  @unique
   avatar_image String?
   phone        String  @unique
+  address      String 
   label        Label
   isBookmarked Boolean @default(false)
   isDeleted    Boolean @default(false)
