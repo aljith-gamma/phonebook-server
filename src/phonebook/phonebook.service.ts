@@ -56,6 +56,15 @@ export class PhonebookService {
       where: {
         user_id: user.id,
         isDeleted: false
+      },
+      select: {
+        id: true,
+        name: true,
+        avatar_url: true,
+        phone: true,
+        address: true,
+        label: true,
+        isBookmarked: true
       }
     })
     
