@@ -12,6 +12,10 @@ export class CreatePhonebookDto {
     @Length(10, 10)
     phone: string  
 
+    @IsString()
+    @IsNotEmpty()
+    address: string;
+
     @IsNotEmpty()
     @IsEnum(Label)
     label: Label
