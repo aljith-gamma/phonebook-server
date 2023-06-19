@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFile } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Req, UseInterceptors, UploadedFile, Query, ParseIntPipe } from '@nestjs/common';
 import { PhonebookService } from './phonebook.service';
 import { CreatePhonebookDto } from './dto/create-phonebook.dto';
 import { UpdatePhonebookDto } from './dto/update-phonebook.dto';
@@ -39,9 +39,10 @@ export class PhonebookController {
 
   @Get()
   findAll(
-    @Req() { user }
+    @Req() { user },
+    @Query('skip', ParseIntPipe) skip: number
   ) {
-    return this.phonebookService.findAll( user );
+    return this.phonebookService.findAll( user, skip );
   }
 
   @Get(':id')

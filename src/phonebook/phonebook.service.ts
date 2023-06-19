@@ -51,7 +51,14 @@ export class PhonebookService {
       }
   }
 
-  async findAll(user: User) {
+  async findAll(user: User, skip: number) {
+    const {_count : count} = await this.prisma.phonebook.aggregate({
+      where: {
+        user_id: user.id
+      },
+      _count: true
+    })
+    
     const contacts = await this.prisma.phonebook.findMany({
       where: {
         user_id: user.id,
@@ -65,12 +72,19 @@ export class PhonebookService {
         address: true,
         label: true,
         isBookmarked: true
-      }
+      },
+      orderBy: {
+        name: 'asc'
+      },
+      skip: skip,
+      take: 10
     })
+
     
     return {
       status: true,
-      data: contacts
+      data: contacts,
+      count
     }
   }
 
