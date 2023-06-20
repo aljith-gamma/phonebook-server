@@ -113,7 +113,8 @@ export class PhonebookService {
   async findAll(user: User, skip: number) {
     const {_count : count} = await this.prisma.phonebook.aggregate({
       where: {
-        user_id: user.id
+        user_id: user.id,
+        isDeleted: false
       },
       _count: true
   })
@@ -133,7 +134,7 @@ export class PhonebookService {
       isBookmarked: true
     },
     orderBy: {
-      name: 'asc'
+      name: 'asc',
     },
     skip: skip,
     take: 10
@@ -180,15 +181,30 @@ export class PhonebookService {
     }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} phonebook`;
-  }
+  async removeContact(id: number, user: User) {
+    const contact = await this.prisma.phonebook.findFirst({
+      where: {
+        id,
+        user_id: user.id,
+        isDeleted: false
+      }
+    })
 
-  update(id: number, updatePhonebookDto: UpdatePhonebookDto) {
-    return `This action updates a #${id} phonebook`;
-  }
+    if(!contact){
+      return {
+        status: false,
+        message: 'No such contact exist!'
+      }
+    }
 
-  remove(id: number) {
-    return `This action removes a #${id} phonebook`;
+    const deletedData = await this.prisma.phonebook.update({
+      where: { id },
+      data: { isDeleted: true}
+    })
+
+    return {
+      status: true,
+      message: 'Contact deleted successfully!'
+    }
   }
 }

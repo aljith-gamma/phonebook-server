@@ -71,7 +71,10 @@ export class PhonebookController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.phonebookService.remove(+id);
+  removeContact(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() { user }
+  ) {
+    return this.phonebookService.removeContact(id, user);
   }
 }
