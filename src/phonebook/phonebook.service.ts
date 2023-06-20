@@ -5,6 +5,7 @@ import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { normalize } from 'node:path';
 import { ADDRGETNETWORKPARAMS } from 'node:dns';
+import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
 
 @Injectable()
 export class PhonebookService {
@@ -143,6 +144,39 @@ export class PhonebookService {
       status: true,
       data: contacts,
       count
+    }
+  }
+
+  async updateBookmark(id: number, updateBookmarkDto: UpdateBookmarkDto, user: User){
+    const contact = await this.prisma.phonebook.findFirst({
+      where: {
+        id,
+        user_id: user.id,
+        isDeleted: false
+      }
+    })  
+
+    if(!contact){
+      return {
+        status: false,
+        message: 'No such contact exist!'
+      }
+    }
+
+    const updatedContact = await this.prisma.phonebook.update({
+      where: {
+        id
+      },
+      data: {
+        isBookmarked: !updateBookmarkDto.isBookmarked
+      }
+    })
+
+    const message = updateBookmarkDto.isBookmarked ? 'Bookmark removed successfully!' : 'Bookmarked successfully!'
+
+    return {
+      status: true,
+      message
     }
   }
 

@@ -7,6 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
+import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
  
 const fileConfig = {
   destination: './files/avatar',
@@ -60,14 +61,13 @@ export class PhonebookController {
     return this.phonebookService.findAll( user, skip );
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.phonebookService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePhonebookDto: UpdatePhonebookDto) {
-    return this.phonebookService.update(+id, updatePhonebookDto);
+  @Patch('bookmark/:id')
+  public async updateBookmark(
+    @Param('id', ParseIntPipe) id: number, 
+    @Body() updateBookmarkDto: UpdateBookmarkDto,
+    @Req() { user }
+  ) {
+    return this.phonebookService.updateBookmark(id, updateBookmarkDto, user);
   }
 
   @Delete(':id')
