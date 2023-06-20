@@ -71,10 +71,18 @@ export class PhonebookController {
   }
 
   @Delete(':id')
-  removeContact(
+  public async removeContact(
     @Param('id', ParseIntPipe) id: number,
     @Req() { user }
   ) {
     return this.phonebookService.removeContact(id, user);
+  }
+
+  @Get('getone/:id')
+  public async getOneContact(
+    @Param('id', ParseIntPipe) id: number,
+    @Req() { user }
+  ){
+    return this.phonebookService.getOneContact(id, user);
   }
 }

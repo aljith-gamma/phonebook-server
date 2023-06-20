@@ -207,4 +207,35 @@ export class PhonebookService {
       message: 'Contact deleted successfully!'
     }
   }
+
+  async getOneContact(id: number, user: User){
+    const contact =  await this.prisma.phonebook.findFirst({
+      where: {
+        id,
+        user_id: user.id,
+        isDeleted: false
+      },
+      select: {
+        id: true,
+        name: true,
+        phone: true,
+        address: true,
+        isBookmarked: true,
+        avatar_url: true,
+        label: true
+      }
+    })
+
+    if(!contact){
+      return {
+        status: false,
+        message: 'No such contact exist!'
+      }
+    }
+
+    return {
+      status: true,
+      data: contact
+    }
+  }
 }
