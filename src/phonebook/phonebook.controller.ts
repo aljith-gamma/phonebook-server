@@ -29,12 +29,27 @@ export class PhonebookController {
       storage: diskStorage(fileConfig)
     })
   )
-  create(
+  public async createContact(
     @Body() createPhonebookDto: CreatePhonebookDto,
     @Req() { user },
     @UploadedFile() avatar: Express.Multer.File,
   ) {
-    return this.phonebookService.create(createPhonebookDto, user, avatar);
+    return this.phonebookService.createContact(createPhonebookDto, user, avatar);
+  }
+
+  @Post('update/:id')
+  @UseInterceptors(
+    FileInterceptor('avatar', {
+      storage: diskStorage(fileConfig)
+    })
+  )
+  public async updateContact(
+    @Body() updatePhonebookDto: UpdatePhonebookDto,
+    @Req() { user },
+    @UploadedFile() avatar: Express.Multer.File,
+    @Param('id', ParseIntPipe) id: number
+  ){
+    return this.phonebookService.updateContact(updatePhonebookDto, user, avatar, id);
   }
 
   @Get()
