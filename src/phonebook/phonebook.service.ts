@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { CreatePhonebookDto } from './dto/create-phonebook.dto';
 import { UpdatePhonebookDto } from './dto/update-phonebook.dto';
-import { User } from '@prisma/client';
+import { Label, User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { normalize } from 'node:path';
 import { ADDRGETNETWORKPARAMS } from 'node:dns';
@@ -110,12 +110,16 @@ export class PhonebookService {
     };
   }
 
-  async findAll(user: User, skip: number, q: string | undefined) {
+  async findAll(user: User, skip: number, q: string | undefined, filterBy: Label | undefined) {
+    console.log(filterBy);
     
     const {_count : count} = await this.prisma.phonebook.aggregate({
         where: {
           user_id: user.id,
           isDeleted: false,
+          ...(filterBy && {
+            label: filterBy
+          }),
           ...(q && {
             name: {
               search:  q + "*"
@@ -136,6 +140,9 @@ export class PhonebookService {
           address: {
             search:  q + "*"
           }
+        }),
+        ...(filterBy && {
+          label: filterBy
         })
       },
       select: {

@@ -8,6 +8,7 @@ import { v4 as uuid } from 'uuid';
 import { extname } from 'path';
 import { diskStorage } from 'multer';
 import { UpdateBookmarkDto } from './dto/update-bookmark.dto';
+import { Label } from '@prisma/client';
  
 const fileConfig = {
   destination: './files/avatar',
@@ -57,9 +58,10 @@ export class PhonebookController {
   findAll(
     @Req() { user },
     @Query('skip', ParseIntPipe) skip: number,
-    @Query('q') q: string
+    @Query('q') q: string,
+    @Query('filterBy') filterBy: Label
   ) {
-    return this.phonebookService.findAll( user, skip, q );
+    return this.phonebookService.findAll( user, skip, q, filterBy );
   }
 
   @Patch('bookmark/:id')
