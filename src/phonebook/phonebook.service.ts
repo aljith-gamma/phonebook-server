@@ -111,7 +111,6 @@ export class PhonebookService {
   }
 
   async findAll(user: User, skip: number, q: string | undefined, filterBy: Label | undefined) {
-    console.log(filterBy);
     
     const {_count : count} = await this.prisma.phonebook.aggregate({
         where: {
