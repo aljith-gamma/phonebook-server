@@ -110,37 +110,50 @@ export class PhonebookService {
     };
   }
 
-  async findAll(user: User, skip: number) {
+  async findAll(user: User, skip: number, q: string | undefined) {
+    
     const {_count : count} = await this.prisma.phonebook.aggregate({
+        where: {
+          user_id: user.id,
+          isDeleted: false,
+          ...(q && {
+            name: {
+              search:  q + "*"
+            }
+          })
+        },
+        _count: true
+    })
+    
+    const contacts = await this.prisma.phonebook.findMany({
       where: {
         user_id: user.id,
-        isDeleted: false
+        isDeleted: false,
+        ...(q && {
+          name: {
+            search: q + "*"
+          },
+          address: {
+            search:  q + "*"
+          }
+        })
       },
-      _count: true
-  })
-    
-  const contacts = await this.prisma.phonebook.findMany({
-    where: {
-      user_id: user.id,
-      isDeleted: false
-    },
-    select: {
-      id: true,
-      name: true,
-      avatar_url: true,
-      phone: true,
-      address: true,
-      label: true,
-      isBookmarked: true
-    },
-    orderBy: {
-      name: 'asc',
-    },
-    skip: skip,
-    take: 10
-  })
+      select: {
+        id: true,
+        name: true,
+        avatar_url: true,
+        phone: true,
+        address: true,
+        label: true,
+        isBookmarked: true
+      },
+      orderBy: {
+        name: 'asc',
+      },
+      skip: skip,
+      take: 10
+    })
 
-    
     return {
       status: true,
       data: contacts,

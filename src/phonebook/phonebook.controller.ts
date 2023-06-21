@@ -56,9 +56,10 @@ export class PhonebookController {
   @Get()
   findAll(
     @Req() { user },
-    @Query('skip', ParseIntPipe) skip: number
+    @Query('skip', ParseIntPipe) skip: number,
+    @Query('q') q: string
   ) {
-    return this.phonebookService.findAll( user, skip );
+    return this.phonebookService.findAll( user, skip, q );
   }
 
   @Patch('bookmark/:id')
@@ -68,7 +69,7 @@ export class PhonebookController {
     @Req() { user }
   ) {
     return this.phonebookService.updateBookmark(id, updateBookmarkDto, user);
-  }
+  } 
 
   @Delete(':id')
   public async removeContact(
