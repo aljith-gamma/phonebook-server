@@ -2,7 +2,8 @@
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 datasource db {
@@ -36,4 +37,7 @@ model Phonebook {
   isDeleted    Boolean @default(false)
   user         User    @relation(fields: [user_id], references: [id])
   user_id      Int
+
+  @@fulltext([name])
+  @@fulltext([address, name])
 }
